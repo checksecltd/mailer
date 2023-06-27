@@ -62,9 +62,7 @@ setup(
 		
 		# ## Dependency Declaration
 		
-		install_requires = [
-				'marrow.util < 2.0',
-			],
+		install_requires = [],
 		
 		extras_require = {
 				":python_version<'3.0.0'": ['futures'],
