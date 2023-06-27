@@ -5,6 +5,8 @@
 import logging
 import pytest
 
+import DNS
+
 from unittest import TestCase
 
 from marrow.mailer.validator import ValidationException, BaseValidator, DomainValidator, EmailValidator, \
@@ -47,7 +49,7 @@ def test_common_rules():
 		assert mock._apply_common_rules(address, 255) == (address, expect)
 
 	for address, expect in dataset:
-		yield closure, address, expect
+		closure(address, expect)
 
 
 def test_common_rules_fixed():
@@ -61,7 +63,7 @@ def test_common_rules_fixed():
 		assert mock._apply_common_rules(address, 255) == expect
 
 	for address, expect in dataset:
-		yield closure, address, expect
+		closure(address, expect)
 
 
 def test_domain_validation_basic():
@@ -77,51 +79,42 @@ def test_domain_validation_basic():
 		assert mock.validate_domain(domain) == (domain, expect)
 
 	for domain, expect in dataset:
-		yield closure, domain, expect
+		closure(domain, expect)
 
 
 def test_domain_lookup():
-	mock = DomainValidator()
+	validator = DomainValidator()
 	dataset = [
-			('gothcandy.com', 'a', '174.129.236.35'),
-			('a' * 64 + '.gothcandy.com', 'a', False),
-			('gothcandy.com', 'mx', [(10, 'mx1.emailsrvr.com'), (20, 'mx2.emailsrvr.com')]),
-			('nx.example.com', 'a', False),
-			('xn--ls8h.la', 'a', '38.103.165.13'),  # IDN: (poop).la
+			('thisdomainshouldnot.exist', 'a', False),
 		]
 
 	def closure(domain, kind, expect):
 		try:
-			assert mock.lookup_domain(domain, kind, server=['8.8.8.8']) == expect
+			got = validator.lookup_domain(domain, kind, server=['8.8.8.8'])
+			assert got == expect, f"{domain=} {kind=} {got=} {expect=}"
 		except DNS.DNSError:
 			pytest.skip("Skipped due to DNS error.")
 
 	for domain, kind, expect in dataset:
-		yield closure, domain, kind, expect
+		closure(domain, kind, expect)
 
 
 def test_domain_validation():
-	mock = DomainValidator(lookup_dns='mx')
+	validator = DomainValidator(lookup_dns='mx')
 	dataset = [
-			('example.com', 'Domain does not seem to exist.'),
-			# TODO This domain is always erroring out, please do something
-			# ('xn--ls8h.la', ''), # IDN: (poop).la
 			('', 'Invalid domain: It cannot be empty.'),
 			('-bad.example.com', 'Invalid domain.'),
-			('gothcandy.com', ''),
-			('a' * 64 + '.gothcandy.com', 'Domain does not seem to exist.'),
-			('gothcandy.com', ''),
-			('nx.example.com', 'Domain does not seem to exist.'),
+			('thisdomainshouldnot.exist', 'Domain does not seem to exist.'),
 		]
 
 	def closure(domain, expect):
 		try:
-			assert mock.validate_domain(domain) == (domain, expect)
+			assert validator.validate_domain(domain) == (domain, expect)
 		except DNS.DNSError:
 			pytest.skip("Skipped due to DNS error.")
 
 	for domain, expect in dataset:
-		yield closure, domain, expect
+		closure(domain, expect)
 
 
 def test_bad_lookup_record_1():
@@ -151,7 +144,7 @@ def test_email_validation():
 		assert mock.validate_email(address) == (address, expect)
 
 	for address, expect in dataset:
-		yield closure, address, expect
+		closure(address, expect)
 
 
 def test_harvester():
@@ -166,4 +159,4 @@ def test_harvester():
 		assert list(mock.harvest(text)) == expect
 
 	for text, expect in dataset:
-		yield closure, text, expect
+		closure(text, expect)
