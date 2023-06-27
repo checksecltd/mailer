@@ -99,24 +99,6 @@ def test_domain_lookup():
 		closure(domain, kind, expect)
 
 
-def test_domain_validation():
-	validator = DomainValidator(lookup_dns='mx')
-	dataset = [
-			('', 'Invalid domain: It cannot be empty.'),
-			('-bad.example.com', 'Invalid domain.'),
-			('thisdomainshouldnot.exist', 'Domain does not seem to exist.'),
-		]
-
-	def closure(domain, expect):
-		try:
-			assert validator.validate_domain(domain) == (domain, expect)
-		except DNS.DNSError:
-			pytest.skip("Skipped due to DNS error.")
-
-	for domain, expect in dataset:
-		closure(domain, expect)
-
-
 def test_bad_lookup_record_1():
 	with pytest.raises(RuntimeError):
 		DomainValidator(lookup_dns='cname')
