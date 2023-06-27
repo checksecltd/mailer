@@ -33,11 +33,6 @@ class TestBaseValidator(TestCase):
 
 
 def test_common_rules():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-
 	mock = DomainValidator()
 	dataset = [
 			('valid@example.com', ''),
@@ -56,11 +51,6 @@ def test_common_rules():
 
 
 def test_common_rules_fixed():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-
 	mock = DomainValidator(fix=True)
 	dataset = [
 			('.fixme@example.com', ('fixme@example.com', '')),
@@ -75,11 +65,6 @@ def test_common_rules_fixed():
 
 
 def test_domain_validation_basic():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-
 	mock = DomainValidator()
 	dataset = [
 			('example.com', ''),
@@ -96,11 +81,6 @@ def test_domain_validation_basic():
 
 
 def test_domain_lookup():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-
 	mock = DomainValidator()
 	dataset = [
 			('gothcandy.com', 'a', '174.129.236.35'),
@@ -121,11 +101,6 @@ def test_domain_lookup():
 
 
 def test_domain_validation():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-
 	mock = DomainValidator(lookup_dns='mx')
 	dataset = [
 			('example.com', 'Domain does not seem to exist.'),
@@ -150,21 +125,11 @@ def test_domain_validation():
 
 
 def test_bad_lookup_record_1():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-	
 	with pytest.raises(RuntimeError):
 		DomainValidator(lookup_dns='cname')
 
 
 def test_bad_lookup_record_2():
-	try:
-		import DNS
-	except ImportError:
-		pytest.skip("PyDNS not installed.")
-	
 	mock = DomainValidator()
 	
 	with pytest.raises(RuntimeError):

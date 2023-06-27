@@ -21,7 +21,15 @@ exec(open(os.path.join("marrow", "mailer", "release.py")).read())
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-tests_require = ['pytest', 'pytest-cov', 'pytest-spec', 'pytest-flakes', 'coverage', 'transaction']
+tests_require = [
+	'pytest',
+	'pytest-cov',
+	'pytest-spec',
+	'pytest-flakes',
+	'coverage',
+	'transaction',
+	'py3dns',
+]
 
 
 # # Entry Point

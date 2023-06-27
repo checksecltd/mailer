@@ -71,9 +71,7 @@ it manually. For this you use the *fix* flag when instantiating a validator:
 Paranoid people may wish to verify that the informed domain actually exists.
 For that you can pass a *lookup_dns='a'* argument to the constructor, or even
 *lookup_dns='mx'* to verify that the domain actually has e-mail servers.
-To use this feature, you need to install the *pydns* library:
-
-     easy_install -UZ pydns
+To use this feature, you need to install the *py3dns* library:
 
 How to use
 ==========
