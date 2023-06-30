@@ -70,7 +70,7 @@ setup(
 		
 		# ## Dependency Declaration
 		
-		install_requires = [],
+		install_requires = ['python-magic'],
 		
 		extras_require = {
 				":python_version<'3.0.0'": ['futures'],
