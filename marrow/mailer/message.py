@@ -4,7 +4,6 @@
 
 from __future__ import unicode_literals
 
-import imghdr
 import os
 import sys
 import time
@@ -16,6 +15,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.nonmultipart import MIMENonMultipart
 from email.utils import make_msgid, formatdate
 from mimetypes import guess_type
+
+import magic
 
 from marrow.mailer import release
 from marrow.mailer.address import Address, AddressList, AutoConverter
@@ -360,8 +361,9 @@ class Message(object):
 		else:
 			raise TypeError("Unable to read image contents")
 
-		subtype = imghdr.what(None, data)
-		self.attach(name, data, 'image', subtype, True)
+		mime = magic.detect_from_content(data).mime_type
+		main, sub = mime.split('/', 1)
+		self.attach(name, data, main, sub, True)
 
 	@staticmethod
 	def _callable(var):
