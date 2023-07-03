@@ -35,7 +35,7 @@ tests_require = [
 # # Entry Point
 
 setup(
-		name = "marrow.mailer",
+		name = "marrowmailer",
 		version = version,
 		
 		description = description,
