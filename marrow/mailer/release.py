@@ -9,8 +9,6 @@ VersionInfo = namedtuple(
 		'major',
 		'minor',
 		'micro',
-		'releaselevel',
-		'serial',
 	),
 )
 
@@ -21,9 +19,8 @@ AuthorInfo = namedtuple(
 	),
 )
 
-info = VersionInfo(4, 1, 3, 'dev', 0)
-release = f"{info.releaselevel[0]}{info.serial}" if info.releaselevel != "final" else ""
-version = f"{info.major}.{info.minor}.{info.micro}{release}"
+info = VersionInfo(4, 2, 0)
+version = f"{info.major}.{info.minor}.{info.micro}"
 
 author = AuthorInfo("Alice Bevan-McGregor", 'alice@gothcandy.com')
 
