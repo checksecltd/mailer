@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os
 import sys
 
 try:
@@ -9,17 +8,13 @@ try:
 except ImportError:
 	from setuptools import setup, find_packages
 
-if sys.version_info < (2, 6):
-	raise SystemExit("Python 2.6 later is required.")
+assert sys.version_info >= (3, 8), "Python 3.8 or later is required."
 
-elif sys.version_info > (3, 0) and sys.version_info < (3, 2):
-	raise SystemExit("Python 3.2 or later is required.")
-
-
-version = description = url = author = ""  # Satisfy linter.
-exec(open(os.path.join("marrow", "mailer", "release.py")).read())
-
-here = os.path.abspath(os.path.dirname(__file__))
+version = "4.2.1"
+author = ""
+author_email = ""
+description = "A light-weight modular mail delivery framework for 3.8+, Pypy, and Pypy3."
+url = "https://github.com/checksecltd/mailer"
 
 tests_require = [
 	'pytest',
@@ -39,11 +34,11 @@ setup(
 		version = version,
 		
 		description = description,
-		long_description = "", # codecs.open(os.path.join(here, 'README.rst'), 'r', 'utf8').read(),
+		long_description = "",
 		url = url,
 		
-		author = author.name,
-		author_email = author.email,
+		author = author,
+		author_email = author_email,
 		
 		license = 'MIT',
 		keywords = '',
@@ -54,11 +49,10 @@ setup(
 				"License :: OSI Approved :: MIT License",
 				"Operating System :: OS Independent",
 				"Programming Language :: Python",
-				"Programming Language :: Python :: 2.6",
-				"Programming Language :: Python :: 2.7",
-				"Programming Language :: Python :: 3.3",
-				"Programming Language :: Python :: 3.4",
-				"Programming Language :: Python :: 3.5",
+				"Programming Language :: Python :: 3.8",
+				"Programming Language :: Python :: 3.9",
+				"Programming Language :: Python :: 3.10",
+				"Programming Language :: Python :: 3.11",
 				"Topic :: Software Development :: Libraries :: Python Modules",
 				"Topic :: Utilities",
 			],

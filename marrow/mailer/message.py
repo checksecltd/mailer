@@ -18,7 +18,6 @@ from mimetypes import guess_type
 
 import magic
 
-from marrow.mailer import release
 from marrow.mailer.address import Address, AddressList, AutoConverter
 from marrow.util.compat import basestring, unicode, native
 
@@ -65,7 +64,6 @@ class Message(object):
 		self.embedded = []
 		self.headers = []
 		self.retries = 3
-		self.brand = True
 
 		self._sender = None
 		self._author = AddressList()
@@ -179,11 +177,6 @@ class Message(object):
 				('Organization', self.organization),
 				('X-Priority', self.priority),
 			]
-
-		if self.brand:
-			headers.extend([
-					('X-Mailer', "marrow.mailer {0}".format(release.version))
-				])
 
 		if isinstance(self.headers, dict):
 			for key in self.headers:
