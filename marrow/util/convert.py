@@ -189,7 +189,7 @@ class KeywordProcessor(object):
         self.quotes = quotes = list(quotes) if quotes else []
         
         self.pattern = ''.join((
-                ('[\s%s]*' % (''.join(separators), )), # Trap possible leading space or separators.
+                (r'[\s%s]*' % (''.join(separators), )), # Trap possible leading space or separators.
                 '(',
                     ('[%s]%s' % (''.join([i for i in list(groups) if i is not None]), '?' if None in groups else '')) if groups else '', # Pass groups=('+','-') to handle optional leading + or -.
                     ''.join([(r'%s[^%s]+%s|' % (i, i, i)) for i in quotes]) if quotes else '', # Match any amount of text (that isn't a quote) inside quotes.
