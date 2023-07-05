@@ -217,7 +217,8 @@ class TestMethods(TestCase):
 	def test_new(self):
 		config = dict(
 			manager=dict(use='immediate'), transport=dict(use='mock'),
-			message=dict(author='from@example.com', retries=1, brand=False))
+			message=dict(author='from@example.com', retries=1),
+		)
 		
 		interface = Mailer(config).start()
 		message = interface.new(retries=2)
@@ -226,7 +227,6 @@ class TestMethods(TestCase):
 		assert message.bcc == []
 		assert message.retries == 2
 		assert message.mailer is interface
-		assert message.brand == False
 		
 		with pytest.raises(NotImplementedError):
 			Message().send()
