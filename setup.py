@@ -3,12 +3,10 @@
 
 import sys
 
-try:
-	from setuptools.core import setup, find_packages
-except ImportError:
-	from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
-assert sys.version_info >= (3, 8), "Python 3.8 or later is required."
+if sys.version_info[:2] < (3, 8):
+	raise AssertionError("Python 3.8 or later is required.")
 
 version = "4.2.1"
 author = "Alice Bevan-McGregor"
