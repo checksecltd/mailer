@@ -11,8 +11,8 @@ except ImportError:
 assert sys.version_info >= (3, 8), "Python 3.8 or later is required."
 
 version = "4.2.1"
-author = ""
-author_email = ""
+author = "Alice Bevan-McGregor"
+author_email = "alice@gothcandy.com"
 description = "A light-weight modular mail delivery framework for 3.8+, Pypy, and Pypy3."
 url = "https://github.com/checksecltd/mailer"
 
