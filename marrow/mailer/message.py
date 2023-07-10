@@ -4,7 +4,6 @@
 
 from __future__ import unicode_literals
 
-import imghdr
 import os
 import sys
 import time
@@ -17,7 +16,8 @@ from email.mime.nonmultipart import MIMENonMultipart
 from email.utils import make_msgid, formatdate
 from mimetypes import guess_type
 
-from marrow.mailer import release
+import magic
+
 from marrow.mailer.address import Address, AddressList, AutoConverter
 from marrow.util.compat import basestring, unicode, native
 
@@ -64,7 +64,6 @@ class Message(object):
 		self.embedded = []
 		self.headers = []
 		self.retries = 3
-		self.brand = True
 
 		self._sender = None
 		self._author = AddressList()
@@ -178,11 +177,6 @@ class Message(object):
 				('Organization', self.organization),
 				('X-Priority', self.priority),
 			]
-
-		if self.brand:
-			headers.extend([
-					('X-Mailer', "marrow.mailer {0}".format(release.version))
-				])
 
 		if isinstance(self.headers, dict):
 			for key in self.headers:
@@ -305,7 +299,7 @@ class Message(object):
 		else:
 			raise TypeError("Unable to read attachment contents")
 		
-		part.set_payload(base64.encodestring(value))
+		part.set_payload(base64.encodebytes(value))
 
 		if not filename:
 			filename = name
@@ -360,8 +354,9 @@ class Message(object):
 		else:
 			raise TypeError("Unable to read image contents")
 
-		subtype = imghdr.what(None, data)
-		self.attach(name, data, 'image', subtype, True)
+		mime = magic.detect_from_content(data).mime_type
+		main, sub = mime.split('/', 1)
+		self.attach(name, data, main, sub, True)
 
 	@staticmethod
 	def _callable(var):

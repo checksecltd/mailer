@@ -71,9 +71,7 @@ it manually. For this you use the *fix* flag when instantiating a validator:
 Paranoid people may wish to verify that the informed domain actually exists.
 For that you can pass a *lookup_dns='a'* argument to the constructor, or even
 *lookup_dns='mx'* to verify that the domain actually has e-mail servers.
-To use this feature, you need to install the *pydns* library:
-
-     easy_install -UZ pydns
+To use this feature, you need to install the *py3dns* library:
 
 How to use
 ==========
@@ -316,44 +314,3 @@ class EmailHarvester(EmailValidator):
             # TODO: optionally validate before yielding?
             # TODO: keep a list of harvested but not validated?
             yield match.group().replace('..', '.')
-
-
-# rfc822_specials = '()<>@,;:\\"[]'
-
-# is_address_valid(addr):
-# # First we validate the name portion (name@domain)
-# c = 0
-# while c < len(addr):
-#     if addr[c] == '"' and (not c or addr[c - 1] == '.' or addr[c - 1] == '"'):
-#         c = c + 1
-#         while c < len(addr):
-#             if addr[c] == '"': break
-#             if addr[c] == '\\' and addr[c + 1] == ' ':
-#                 c = c + 2
-#                 continue
-#             if ord(addr[c]) < 32 or ord(addr[c]) >= 127: return 0
-#             c = c + 1
-#         else: return 0
-#         if addr[c] == '@': break
-#         if addr[c] != '.': return 0
-#         c = c + 1
-#         continue
-#     if addr[c] == '@': break
-#     if ord(addr[c]) <= 32 or ord(addr[c]) >= 127: return 0
-#     if addr[c] in rfc822_specials: return 0
-#     c = c + 1
-# if not c or addr[c - 1] == '.': return 0
-# 
-# # Next we validate the domain portion (name@domain)
-# domain = c = c + 1
-# if domain >= len(addr): return 0
-# count = 0
-# while c < len(addr):
-#     if addr[c] == '.':
-#         if c == domain or addr[c - 1] == '.': return 0
-#         count = count + 1
-#     if ord(addr[c]) <= 32 or ord(addr[c]) >= 127: return 0
-#     if addr[c] in rfc822_specials: return 0
-#     c = c + 1
-# 
-# return count >= 1

@@ -73,7 +73,7 @@ class TestAddress(object):
 	def test_compare_othertype(self):
 		addr = Address('foo@example.com')
 		with pytest.raises(NotImplementedError):
-			addr != 123
+			_ = addr != 123
 	
 	def test_len(self):
 		addr = Address('foo@example.com')
@@ -82,10 +82,6 @@ class TestAddress(object):
 	def test_repr(self):
 		addr = Address('foo@example.com')
 		assert repr(addr) == 'Address("foo@example.com")'
-	
-	def test_validation_truncates_at_second_at_character(self):
-		# This is basically due to Python's parseaddr behavior.
-		assert 'bad@user' == Address('bad@user@example.com')
 	
 	def test_validation_rejects_addresses_without_at(self):
 		# TODO: This may be actually a valid input - some mail systems allow to

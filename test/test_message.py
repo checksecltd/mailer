@@ -315,32 +315,6 @@ class TestBasicMessage(TestCase):
 		message.sender = 'devnull@example.com'
 		assert str(message.envelope) == 'devnull@example.com'
 	
-	# This sorta works, it just ignores the message encoding and always uses utf-8.  :(
-	#def test_subject_with_umlaut(self):
-	#	message = self.build_message()
-	#	
-	#	subject_string = "Test with äöü"
-	#	message.subject = subject_string
-	#	message.encoding = "UTF-8"
-	#	
-	#	msg = email.message_from_string(str(message))
-	#	encoded_subject = Header(subject_string, "UTF-8").encode()
-	#	assert encoded_subject == msg['Subject']
-	
-	# This sorta works, it just ignores the message encoding and always uses utf-8.  :(
-	#def test_from_with_umlaut(self):
-	#	message = self.build_message()
-	#	
-	#	from_name = "Karl Müller"
-	#	from_email = "karl.mueller@example.com"
-	#	
-	#	message.author = [(from_name, from_email)]
-	#	message.encoding = "ISO-8859-1"
-	#	
-	#	msg = email.message_from_string(str(message))
-	#	encoded_name = "%s <%s>" % (str(Header(from_name, "ISO-8859-1")), from_email)
-	#	assert encoded_name == msg['From']
-	
 	def test_multiple_authors(self):
 		message = self.build_message()
 		
@@ -352,15 +326,6 @@ class TestBasicMessage(TestCase):
 		msg = email.message_from_string(str(message))
 		from_addresses = re.split(r",\n?\s+", msg['From'])
 		assert from_addresses == ['bar@example.com', 'baz@example.com']
-	
-	# def test_multiple_authors_require_sender(self):
-	#	 message = self.build_message()
-	#	 
-	#	 message.authors = ['bar@example.com', 'baz@example.com']
-	#	 self.assertRaises(ValueError, str, message)
-	#	 
-	#	 message.sender = 'bar@example.com'
-	#	 str(message)
 	
 	def test_permit_one_sender_at_most(self):
 		with pytest.raises(ValueError):
@@ -482,13 +447,6 @@ class TestBasicMessage(TestCase):
 		msg = email.message_from_string(str(message))
 		assert msg['Content-Type'] == 'text/plain; charset="iso-8859-1"'
 		assert msg['Content-Transfer-Encoding'] == 'quoted-printable'
-	
-	# def test_message_encoding_can_be_set_in_config_file(self):
-	#	 interface.config['mail.message.encoding'] = 'ISO-8859-1'
-	#	 message = self.build_message()
-	#	 msg = email.message_from_string(str(message))
-	#	 self.assertEqual('text/plain; charset="iso-8859-1"', msg['Content-Type'])
-	#	 self.assertEqual('quoted-printable', msg['Content-Transfer-Encoding'])
 	
 	def test_plain_utf8_encoding_uses_qp(self):
 		message = self.build_message()

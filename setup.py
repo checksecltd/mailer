@@ -1,41 +1,42 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os
 import sys
 
-try:
-	from setuptools.core import setup, find_packages
-except ImportError:
-	from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
-if sys.version_info < (2, 6):
-	raise SystemExit("Python 2.6 later is required.")
+if sys.version_info[:2] < (3, 8):
+	raise AssertionError("Python 3.8 or later is required.")
 
-elif sys.version_info > (3, 0) and sys.version_info < (3, 2):
-	raise SystemExit("Python 3.2 or later is required.")
+version = "4.2.1"
+author = "Alice Bevan-McGregor"
+author_email = "alice@gothcandy.com"
+description = "A light-weight modular mail delivery framework for 3.8+, Pypy, and Pypy3."
+url = "https://github.com/checksecltd/mailer"
 
-
-version = description = url = author = ""  # Satisfy linter.
-exec(open(os.path.join("marrow", "mailer", "release.py")).read())
-
-here = os.path.abspath(os.path.dirname(__file__))
-
-tests_require = ['pytest', 'pytest-cov', 'pytest-spec', 'pytest-flakes', 'coverage', 'transaction']
+tests_require = [
+	'pytest',
+	'pytest-cov',
+	'pytest-spec',
+	'pytest-flakes',
+	'coverage',
+	'transaction',
+	'py3dns',
+]
 
 
 # # Entry Point
 
 setup(
-		name = "marrow.mailer",
+		name = "marrowmailer",
 		version = version,
 		
 		description = description,
-		long_description = "", # codecs.open(os.path.join(here, 'README.rst'), 'r', 'utf8').read(),
+		long_description = "",
 		url = url,
 		
-		author = author.name,
-		author_email = author.email,
+		author = author,
+		author_email = author_email,
 		
 		license = 'MIT',
 		keywords = '',
@@ -46,11 +47,10 @@ setup(
 				"License :: OSI Approved :: MIT License",
 				"Operating System :: OS Independent",
 				"Programming Language :: Python",
-				"Programming Language :: Python :: 2.6",
-				"Programming Language :: Python :: 2.7",
-				"Programming Language :: Python :: 3.3",
-				"Programming Language :: Python :: 3.4",
-				"Programming Language :: Python :: 3.5",
+				"Programming Language :: Python :: 3.8",
+				"Programming Language :: Python :: 3.9",
+				"Programming Language :: Python :: 3.10",
+				"Programming Language :: Python :: 3.11",
 				"Topic :: Software Development :: Libraries :: Python Modules",
 				"Topic :: Utilities",
 			],
@@ -58,13 +58,10 @@ setup(
 		packages = find_packages(exclude=['example', 'test', 'test.*']),
 		include_package_data = True,
 		package_data = {'': ['README.textile', 'LICENSE.txt']},
-		namespace_packages = ['marrow'],
 		
 		# ## Dependency Declaration
 		
-		install_requires = [
-				'marrow.util < 2.0',
-			],
+		install_requires = ['python-magic'],
 		
 		extras_require = {
 				":python_version<'3.0.0'": ['futures'],
