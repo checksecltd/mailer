@@ -4,12 +4,17 @@
 
 import logging
 import inspect
-import pkg_resources
+import sys
 
 from collections import defaultdict
 from functools import partial
 
 from marrow.util.compat import binary, unicode
+
+if sys.version_info[:2] >= (3, 10):
+    from importlib.metadata import entry_points
+else:
+    from importlib_metadata import entry_points
 
 
 def flatten(x):
@@ -81,7 +86,7 @@ def load_object(target, namespace=None):
     Providing a namespace does not prevent full object lookup (dot-colon notation) from working.
     """
     if namespace and ':' not in target:
-        allowable = dict((i.name,  i) for i in pkg_resources.iter_entry_points(namespace))
+        allowable = dict((i.name, i) for i in entry_points(group=namespace))
         if target not in allowable:
             raise ValueError('Unknown plugin "' + target + '"; found: ' + ', '.join(allowable))
         return allowable[target].load()

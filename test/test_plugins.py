@@ -5,13 +5,17 @@
 from __future__ import unicode_literals
 
 import logging
-import pkg_resources
+import sys
 import pytest
 
 from unittest import TestCase
 
 from marrow.mailer.interfaces import IManager, ITransport
 
+if sys.version_info[:2] >= (3, 10):
+    from importlib.metadata import entry_points
+else:
+    from importlib_metadata import entry_points
 
 log = logging.getLogger('tests')
 
@@ -27,7 +31,7 @@ def test_managers():
 		assert isinstance(plug, IManager), "{name} does not conform to the IManager API.".format(name=plugin.name)
 	
 	entrypoint = None
-	for entrypoint in pkg_resources.iter_entry_points('marrow.mailer.manager', None):
+	for entrypoint in entry_points(group='marrow.mailer.manager'):
 		yield closure, entrypoint
 	
 	if entrypoint is None:
@@ -44,7 +48,7 @@ def test_transports():
 		assert isinstance(plug, ITransport), "{name} does not conform to the ITransport API.".format(name=plugin.name)
 	
 	entrypoint = None
-	for entrypoint in pkg_resources.iter_entry_points('marrow.mailer.transport', None):
+	for entrypoint in entry_points(group='marrow.mailer.transport'):
 		yield closure, entrypoint
 	
 	if entrypoint is None:

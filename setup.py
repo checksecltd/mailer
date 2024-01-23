@@ -61,7 +61,10 @@ setup(
 		
 		# ## Dependency Declaration
 		
-		install_requires = ['python-magic'],
+		install_requires = [
+            'python-magic',
+            'importlib_metadata>=4.4; python_version < "3.10"',
+        ],
 		
 		extras_require = {
 				":python_version<'3.0.0'": ['futures'],

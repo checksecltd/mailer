@@ -3,8 +3,8 @@
 """marrow.mailer mail delivery framework and MIME message abstraction."""
 
 
+import sys
 import warnings
-import pkg_resources
 
 from email import charset
 from functools import partial
@@ -16,6 +16,10 @@ from marrow.util.compat import basestring
 from marrow.util.bunch import Bunch
 from marrow.util.object import load_object
 
+if sys.version_info[:2] >= (3, 10):
+    from importlib.metadata import entry_points
+else:
+    from importlib_metadata import entry_points
 
 __all__ = ['Mailer', 'Delivery', 'Message']
 
@@ -108,7 +112,7 @@ class Mailer(object):
 			return load_object(spec)
 		
 		# Load the entry point.
-		for entrypoint in pkg_resources.iter_entry_points(group, spec):
+		for entrypoint in entry_points(group=group, name=spec):
 			return entrypoint.load()
 	
 	def start(self):

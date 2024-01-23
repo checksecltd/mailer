@@ -5,7 +5,6 @@
 from __future__ import unicode_literals
 
 import logging
-import pkg_resources
 
 from functools import partial
 from unittest import TestCase
