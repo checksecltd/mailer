@@ -40,15 +40,18 @@ def flatten(x):
 
 
 def yield_property(iterable, name, default=None):
-    for i in iterable: yield getattr(i, name, default)
+    for i in iterable:
+        yield getattr(i, name, default)
 
 
 def yield_keyvalue(iterable, key, default=None):
-    for i in iterable: yield i[key] if key in iterable else default
+    for i in iterable:
+        yield i[key] if key in iterable else default
 
 
 class _NoDefault(object):
     pass
+
 
 NoDefault = _NoDefault()
 
@@ -85,16 +88,18 @@ def load_object(target, namespace=None):
 
     Providing a namespace does not prevent full object lookup (dot-colon notation) from working.
     """
-    if namespace and ':' not in target:
+    if namespace and ":" not in target:
         allowable = dict((i.name, i) for i in entry_points(group=namespace))
         if target not in allowable:
-            raise ValueError('Unknown plugin "' + target + '"; found: ' + ', '.join(allowable))
+            raise ValueError(
+                'Unknown plugin "' + target + '"; found: ' + ", ".join(allowable)
+            )
         return allowable[target].load()
 
-    parts, target = target.split(':') if ':' in target else (target, None)
+    parts, target = target.split(":") if ":" in target else (target, None)
     module = __import__(parts)
 
-    for part in parts.split('.')[1:] + ([target] if target else []):
+    for part in parts.split(".")[1:] + ([target] if target else []):
         module = getattr(module, part)
 
     return module
@@ -103,13 +108,12 @@ def load_object(target, namespace=None):
 class PluginCache(defaultdict):
     """Lazily load plugins from the given namespace."""
 
-    def __init__(self,  namespace):
+    def __init__(self, namespace):
         super(PluginCache, self).__init__()
-        self.namespace =  namespace
+        self.namespace = namespace
 
-    def __missing__(self,  key):
-        return load_object(key,  self.namespace)
-
+    def __missing__(self, key):
+        return load_object(key, self.namespace)
 
 
 class Cache(dict):
@@ -216,7 +220,7 @@ class LoggingFile(object):
     """A write-only file-like object that redirects to the standard Python logging module."""
 
     def __init__(self, logger=None, level=logging.ERROR):
-        logger = logger if logger else logging.getLogger('logfile')
+        logger = logger if logger else logging.getLogger("logfile")
         self.logger = partial(logger.log, level)
 
     def write(self, text):
@@ -241,11 +245,12 @@ class LoggingFile(object):
 
 
 class CounterMeta(type):
-    '''
+    """
     A simple meta class which adds a ``_counter`` attribute to the instances of
     the classes it is used on. This counter is simply incremented for each new
     instance.
-    '''
+    """
+
     counter = 0
 
     def __call__(self, *args, **kwargs):
@@ -281,7 +286,7 @@ def getargspec(obj):
         else:
             argnames, varargs, varkw, _defaults = inspect.getargspec(obj.__init__)
 
-    elif hasattr(obj, '__call__'):
+    elif hasattr(obj, "__call__"):
         argnames, varargs, varkw, _defaults = inspect.getargspec(obj.__call__)
 
     else:
@@ -291,7 +296,7 @@ def getargspec(obj):
     # if (argnames, varargs, varkw, defaults) is (None, None, None, None):
     #     raise InspectionFailed()
 
-    if argnames and argnames[0] == 'self':
+    if argnames and argnames[0] == "self":
         del argnames[0]
 
     if _defaults is None:

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-'''
+"""
 
 from __future__ import unicode_literals
 
@@ -54,4 +54,4 @@ def test_transports():
 	if entrypoint is None:
 		pytest.skip("No transports found, have you run `setup.py develop` yet?")
 
-'''
+"""

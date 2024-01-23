@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-'''
+"""
 
 from __future__ import unicode_literals
 
@@ -65,4 +65,4 @@ class TestMailDirectoryTransport(TestCase):
         with open(os.path.join(self.path, 'new', filename), 'rb') as fh:
             self.assertEqual(str(message), fh.read())
 
-'''
+"""

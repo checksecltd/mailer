@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-'''
+"""
 
 from __future__ import unicode_literals
 
@@ -115,4 +115,4 @@ class TestImmediateManager(ManagerTestCase):
         self.manager.shutdown()
         self.assertEquals(self.states, ['running', 'stopped'])
 
-'''
+"""
