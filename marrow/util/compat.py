@@ -12,15 +12,28 @@ import sys
 import traceback
 
 
-__all__ = ['formatdate', 'unquote', 'range', 'execfile', 'exception', 'binary',
-           'unicode', 'bytestring', 'native', 'unicodestr', 'uvalues', 'IO',
-           'parse_qsl']
+__all__ = [
+    "formatdate",
+    "unquote",
+    "range",
+    "execfile",
+    "exception",
+    "binary",
+    "unicode",
+    "bytestring",
+    "native",
+    "unicodestr",
+    "uvalues",
+    "IO",
+    "parse_qsl",
+]
 
 
-if sys.version_info < (3, 0):  
-    from email.utils import formatdate # DEPRECATE
+if sys.version_info < (3, 0):
+    from email.utils import formatdate  # DEPRECATE
     from urllib import unquote_plus as unquote
     from urlparse import parse_qsl
+
     basestring = basestring
     binary = bytes = str
     unicode = unicode
@@ -28,9 +41,10 @@ if sys.version_info < (3, 0):
     execfile = execfile
 
 else:  # pragma: no cover
-    from email.utils import formatdate # DEPRECATE
+    from email.utils import formatdate  # DEPRECATE
     from urllib.parse import unquote_plus as unquote_
     from urllib.parse import parse_qsl
+
     basestring = str
     binary = bytes = bytes
     unicode = str
@@ -49,7 +63,7 @@ else:  # pragma: no cover
         """Python 3 requires unquote to be passed unicode, but unicode
         characters may be encoded using quoted bytes!
         """
-        return unquote_(t.decode('iso-8859-1')).encode('iso-8859-1')
+        return unquote_(t.decode("iso-8859-1")).encode("iso-8859-1")
 
 
 def exception(maxTBlevel=None):
@@ -73,24 +87,24 @@ def exception(maxTBlevel=None):
 
         cls, exc, trbk = sys.exc_info()
         excName = cls.__name__
-        excArgs = getattr(exc, 'args', None)
+        excArgs = getattr(exc, "args", None)
 
-        excTb = ''.join(traceback.format_exception(cls, exc, trbk, maxTBlevel))
+        excTb = "".join(traceback.format_exception(cls, exc, trbk, maxTBlevel))
 
         return Bunch(
-                name=excName,
-                cls=cls,
-                exception=exc,
-                trace=trbk,
-                formatted=excTb,
-                args=excArgs
-            )
+            name=excName,
+            cls=cls,
+            exception=exc,
+            trace=trbk,
+            formatted=excTb,
+            args=excArgs,
+        )
 
     finally:
         del cls, exc, trbk
 
 
-def bytestring(s, encoding='utf-8', fallback='iso-8859-1'):
+def bytestring(s, encoding="utf-8", fallback="iso-8859-1"):
     """Convert a given string into a bytestring."""
 
     if isinstance(s, bytes):
@@ -103,7 +117,7 @@ def bytestring(s, encoding='utf-8', fallback='iso-8859-1'):
         return s.encode(fallback)
 
 
-def native(s, encoding='utf-8', fallback='iso-8859-1'):
+def native(s, encoding="utf-8", fallback="iso-8859-1"):
     """Convert a given string into a native string."""
 
     if isinstance(s, str):
@@ -115,7 +129,7 @@ def native(s, encoding='utf-8', fallback='iso-8859-1'):
     return bytestring(s, encoding, fallback)
 
 
-def unicodestr(s, encoding='utf-8', fallback='iso-8859-1'):
+def unicodestr(s, encoding="utf-8", fallback="iso-8859-1"):
     """Convert a string to unicode if it isn't already."""
 
     if isinstance(s, unicode):
@@ -127,7 +141,7 @@ def unicodestr(s, encoding='utf-8', fallback='iso-8859-1'):
         return s.decode(fallback)
 
 
-def uvalues(a, encoding='utf-8', fallback='iso-8859-1'):
+def uvalues(a, encoding="utf-8", fallback="iso-8859-1"):
     """Return a list of decoded values from an iterator.
 
     If any of the values fail to decode, re-decode all values using the

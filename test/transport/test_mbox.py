@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-'''
+"""
 
 from __future__ import unicode_literals
 
@@ -55,4 +55,4 @@ class TestMailboxTransport(TestCase):
         with open(self.filename, 'rb') as fh:
             self.assertEqual(str(message), b"\n".join(fh.read().splitlines()[1:]))
 
-'''
+"""

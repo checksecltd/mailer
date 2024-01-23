@@ -19,12 +19,14 @@ except ImportError:
 try:
     from concurrent import futures
 except ImportError:  # pragma: no cover
-    raise ImportError("You must install the futures package to use background delivery.")
+    raise ImportError(
+        "You must install the futures package to use background delivery."
+    )
 
 
-__all__ = ['DynamicManager']
+__all__ = ["DynamicManager"]
 
-log = __import__('logging').getLogger(__name__)
+log = __import__("logging").getLogger(__name__)
 
 
 def thread_worker(executor, jobs, timeout, maximum):
@@ -67,7 +69,7 @@ def thread_worker(executor, jobs, timeout, maximum):
 
 
 class WorkItem(object):
-    __slots__ = ('future', 'fn', 'args', 'kwargs')
+    __slots__ = ("future", "fn", "args", "kwargs")
 
     def __init__(self, future, fn, args, kwargs):
         self.future = future
@@ -120,7 +122,10 @@ class ScalingPoolExecutor(futures.ThreadPoolExecutor):
         self.shutdown(True)
 
     def _spawn(self):
-        t = threading.Thread(target=thread_worker, args=(weakref.ref(self), self._work_queue, self.divisor, self.timeout))
+        t = threading.Thread(
+            target=thread_worker,
+            args=(weakref.ref(self), self._work_queue, self.divisor, self.timeout),
+        )
         t.daemon = True
         t.start()
 
@@ -139,19 +144,25 @@ class ScalingPoolExecutor(futures.ThreadPoolExecutor):
 
     @property
     def _optimum_workers(self):
-        return min(self._max_workers, math.ceil(self._work_queue.qsize() / float(self.divisor)))
+        return min(
+            self._max_workers, math.ceil(self._work_queue.qsize() / float(self.divisor))
+        )
 
 
 class DynamicManager(object):
-    __slots__ = ('workers', 'divisor', 'timeout', 'executor', 'transport')
+    __slots__ = ("workers", "divisor", "timeout", "executor", "transport")
 
     name = "Dynamic"
     Executor = ScalingPoolExecutor
 
     def __init__(self, config, transport):
-        self.workers = int(config.get('workers', 10))  # Maximum number of threads to create.
-        self.divisor = int(config.get('divisor', 10))  # Estimate the number of required threads by dividing the queue size by this.
-        self.timeout = float(config.get('timeout', 60))  # Seconds before starvation.
+        self.workers = int(
+            config.get("workers", 10)
+        )  # Maximum number of threads to create.
+        self.divisor = int(
+            config.get("divisor", 10)
+        )  # Estimate the number of required threads by dividing the queue size by this.
+        self.timeout = float(config.get("timeout", 60))  # Seconds before starvation.
 
         self.executor = None
         self.transport = TransportPool(transport)
@@ -165,7 +176,7 @@ class DynamicManager(object):
         self.transport.startup()
 
         workers = self.workers
-        log.debug("Starting thread pool with %d workers." % (workers, ))
+        log.debug("Starting thread pool with %d workers." % (workers,))
         self.executor = self.Executor(workers, self.divisor, self.timeout)
 
         log.info("%s manager ready.", self.name)

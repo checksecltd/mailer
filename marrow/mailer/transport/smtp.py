@@ -4,41 +4,65 @@
 
 import socket
 
-from smtplib import (SMTP, SMTP_SSL, SMTPException, SMTPRecipientsRefused,
-                     SMTPSenderRefused, SMTPServerDisconnected)
+from smtplib import (
+    SMTP,
+    SMTP_SSL,
+    SMTPException,
+    SMTPRecipientsRefused,
+    SMTPSenderRefused,
+    SMTPServerDisconnected,
+)
 
 from marrow.util.convert import boolean
 from marrow.util.compat import native
 
 from marrow.mailer.exc import (
-    TransportExhaustedException, TransportException, TransportFailedException,
-    MessageFailedException)
+    TransportExhaustedException,
+    TransportException,
+    TransportFailedException,
+    MessageFailedException,
+)
 
-log = __import__('logging').getLogger(__name__)
+log = __import__("logging").getLogger(__name__)
 
 
 class SMTPTransport(object):
     """An (E)SMTP pipelining transport."""
 
-    __slots__ = ('ephemeral', 'host', 'tls', 'certfile', 'keyfile', 'port', 'local_hostname', 'username', 'password', 'timeout', 'debug', 'pipeline', 'connection', 'sent')
+    __slots__ = (
+        "ephemeral",
+        "host",
+        "tls",
+        "certfile",
+        "keyfile",
+        "port",
+        "local_hostname",
+        "username",
+        "password",
+        "timeout",
+        "debug",
+        "pipeline",
+        "connection",
+        "sent",
+    )
 
     def __init__(self, config):
-        self.host = native(config.get('host', '127.0.0.1'))
-        self.tls = config.get('tls', 'optional')
-        self.certfile = config.get('certfile', None)
-        self.keyfile = config.get('keyfile', None)
-        self.port = int(config.get('port', 465 if self.tls == 'ssl' else 25))
-        self.local_hostname = native(config.get('local_hostname', '')) or None
-        self.username = native(config.get('username', '')) or None
-        self.password = native(config.get('password', '')) or None
-        self.timeout = config.get('timeout', None)
+        self.host = native(config.get("host", "127.0.0.1"))
+        self.tls = config.get("tls", "optional")
+        self.certfile = config.get("certfile", None)
+        self.keyfile = config.get("keyfile", None)
+        self.port = int(config.get("port", 465 if self.tls == "ssl" else 25))
+        self.local_hostname = native(config.get("local_hostname", "")) or None
+        self.username = native(config.get("username", "")) or None
+        self.password = native(config.get("password", "")) or None
+        self.timeout = config.get("timeout", None)
 
         if self.timeout:
             self.timeout = int(self.timeout)
 
-        self.debug = boolean(config.get('debug', False))
+        self.debug = boolean(config.get("debug", False))
 
-        self.pipeline = config.get('pipeline', None)
+        self.pipeline = config.get("pipeline", None)
         if self.pipeline not in (None, True, False):
             self.pipeline = int(self.pipeline)
 
@@ -57,19 +81,23 @@ class SMTPTransport(object):
                 try:
                     self.connection.quit()
 
-                except SMTPServerDisconnected: # pragma: no cover
+                except SMTPServerDisconnected:  # pragma: no cover
                     pass
 
-                except (SMTPException, socket.error): # pragma: no cover
+                except (SMTPException, socket.error):  # pragma: no cover
                     log.exception("Unhandled error while closing connection.")
 
             finally:
                 self.connection = None
 
     def connect_to_server(self):
-        if self.tls == 'ssl': # pragma: no cover
-            connection = SMTP_SSL(local_hostname=self.local_hostname, keyfile=self.keyfile,
-                                  certfile=self.certfile, timeout=self.timeout)
+        if self.tls == "ssl":  # pragma: no cover
+            connection = SMTP_SSL(
+                local_hostname=self.local_hostname,
+                keyfile=self.keyfile,
+                certfile=self.certfile,
+                timeout=self.timeout,
+            )
         else:
             connection = SMTP(local_hostname=self.local_hostname, timeout=self.timeout)
 
@@ -79,11 +107,13 @@ class SMTPTransport(object):
 
         # Do TLS handshake if configured
         connection.ehlo()
-        if self.tls in ('required', 'optional', True):
-            if connection.has_extn('STARTTLS'): # pragma: no cover
+        if self.tls in ("required", "optional", True):
+            if connection.has_extn("STARTTLS"):  # pragma: no cover
                 connection.starttls(self.keyfile, self.certfile)
-            elif self.tls == 'required':
-                raise TransportException('TLS is required but not available on the server -- aborting')
+            elif self.tls == "required":
+                raise TransportException(
+                    "TLS is required but not available on the server -- aborting"
+                )
 
         # Authenticate to server if necessary
         if self.username and self.password:
@@ -95,7 +125,7 @@ class SMTPTransport(object):
 
     @property
     def connected(self):
-        return getattr(self.connection, 'sock', None) is not None
+        return getattr(self.connection, "sock", None) is not None
 
     def deliver(self, message):
         if not self.connected:
@@ -128,14 +158,14 @@ class SMTPTransport(object):
             log.warning("%s REFUSED %s %s", message.id, e.__class__.__name__, e)
             raise MessageFailedException(str(e))
 
-        except SMTPServerDisconnected as e: # pragma: no cover
+        except SMTPServerDisconnected as e:  # pragma: no cover
             if message.retries >= 0:
                 log.warning("%s DEFERRED %s", message.id, "SMTPServerDisconnected")
                 message.retries -= 1
 
             raise TransportFailedException()
 
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             cls_name = e.__class__.__name__
             log.debug("%s EXCEPTION %s", message.id, cls_name, exc_info=True)
 
