@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 if sys.version_info[:2] < (3, 8):
     raise AssertionError("Python 3.8 or later is required.")
 
-version = "4.2.1"
+version = "4.2.2"
 author = "Alice Bevan-McGregor"
 author_email = "alice@gothcandy.com"
 description = (
