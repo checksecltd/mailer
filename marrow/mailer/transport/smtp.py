@@ -3,6 +3,7 @@
 """Deliver messages using (E)SMTP."""
 
 import socket
+import ssl
 
 from smtplib import (
     SMTP,
@@ -90,13 +91,22 @@ class SMTPTransport(object):
             finally:
                 self.connection = None
 
+    def _build_ssl_context(self):
+        """Build an SSLContext from keyfile/certfile config, or return None for defaults."""
+        if self.certfile or self.keyfile:
+            ctx = ssl.create_default_context()
+            ctx.load_cert_chain(certfile=self.certfile, keyfile=self.keyfile)
+            return ctx
+        return None
+
     def connect_to_server(self):
+        ssl_context = self._build_ssl_context()
+
         if self.tls == "ssl":  # pragma: no cover
             connection = SMTP_SSL(
                 host=None,
                 local_hostname=self.local_hostname,
-                keyfile=self.keyfile,
-                certfile=self.certfile,
+                context=ssl_context,
                 timeout=self.timeout,
             )
         else:
@@ -110,7 +120,7 @@ class SMTPTransport(object):
         connection.ehlo()
         if self.tls in ("required", "optional", True):
             if connection.has_extn("STARTTLS"):  # pragma: no cover
-                connection.starttls(self.keyfile, self.certfile)
+                connection.starttls(context=ssl_context)
             elif self.tls == "required":
                 raise TransportException(
                     "TLS is required but not available on the server -- aborting"
