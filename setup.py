@@ -21,6 +21,7 @@ tests_require = [
     "coverage",
     "transaction",
     "py3dns",
+    "pymta",
 ]
 
 

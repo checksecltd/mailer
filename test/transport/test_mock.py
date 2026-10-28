@@ -1,14 +1,10 @@
 # encoding: utf-8
 
-"""
-
 from __future__ import unicode_literals
 
 import logging
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from nose.plugins.skip import Skip, SkipTest
 
 from marrow.mailer import Message
 from marrow.mailer.exc import TransportFailedException, TransportExhaustedException
@@ -41,4 +37,3 @@ class TestMockTransport(TestCase):
         transport = MockTransport(dict(success=0.0, exhaustion=1.0))
         self.assertRaises(TransportExhaustedException, transport.deliver, None)
 
-"""

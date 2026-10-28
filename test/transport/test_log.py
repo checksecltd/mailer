@@ -1,9 +1,8 @@
 # encoding: utf-8
 
-"""
-
 import logging
 
+from logging.handlers import BufferingHandler
 from unittest import TestCase
 
 from marrow.mailer import Message
@@ -16,15 +15,22 @@ log = logging.getLogger('tests')
 
 class TestLoggingTransport(TestCase):
     def setUp(self):
-        self.messages = logging.getLogger().handlers[0].buffer
-        del self.messages[:]
-        
+        self.handler = BufferingHandler(capacity=100)
+        self.messages = self.handler.buffer
+
+        self.logger = logging.getLogger('marrow.mailer.transport.log')
+        self.level = self.logger.level
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(self.handler)
+
         self.transport = LoggingTransport(dict())
         self.transport.startup()
-    
+
     def tearDown(self):
         self.transport.shutdown()
-    
+        self.logger.removeHandler(self.handler)
+        self.logger.setLevel(self.level)
+
     def test_startup(self):
         self.assertEqual(len(self.messages), 1)
         self.assertEqual(self.messages[0].getMessage(), "Logging transport starting.")
@@ -56,4 +62,3 @@ class TestLoggingTransport(TestCase):
         self.assertEqual(self.messages[2].getMessage(), str(message))
         self.assertEqual(self.messages[2].levelname, 'CRITICAL')
 
-"""

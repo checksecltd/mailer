@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-"""
-
 from __future__ import unicode_literals
 
 import os
@@ -10,15 +8,14 @@ import socket
 import logging
 import smtplib
 
-from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from nose.plugins.skip import Skip, SkipTest
+import pytest
 
-try:
-    from pymta.api import IMTAPolicy, PolicyDecision, IAuthenticator
-    from pymta.test_util import BlackholeDeliverer, DebuggingMTA, MTAThread
-except ImportError: # pragma: no cover
-    raise SkipTest("PyMTA not installed; skipping SMTP tests.")
+from unittest import TestCase
+
+pytest.importorskip("pymta", reason="PyMTA not installed; skipping SMTP tests.")
+
+from pymta.api import IMTAPolicy, PolicyDecision, IAuthenticator
+from pymta.test_util import BlackholeDeliverer, DebuggingMTA, MTAThread
 
 from marrow.mailer import Message
 from marrow.mailer.exc import TransportException, TransportExhaustedException, MessageFailedException
@@ -162,7 +159,7 @@ class TestSMTPTransportRefusedSender(TransportTestCase):
     
     def test_refused_sender(self):
         self.assertRaises(MessageFailedException, self.transport.deliver, self.msg)
-        self.assertEquals(self.collector.received_messages.qsize(), 0)
+        self.assertEqual(self.collector.received_messages.qsize(), 0)
 
 
 class TestSMTPTransportRefusedRecipients(TransportTestCase):
@@ -174,9 +171,8 @@ class TestSMTPTransportRefusedRecipients(TransportTestCase):
     
     def test_refused_recipients(self):
         self.assertRaises(MessageFailedException, self.transport.deliver, self.msg)
-        self.assertEquals(self.collector.received_messages.qsize(), 0)
+        self.assertEqual(self.collector.received_messages.qsize(), 0)
 
-"""
 """
     def get_connection(self):
         # We can not use the id of transport.connection because sometimes Python

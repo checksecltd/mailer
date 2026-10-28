@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-"""
-
 from __future__ import unicode_literals
 
 import os
@@ -11,8 +9,6 @@ import mailbox
 import tempfile
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from nose.plugins.skip import Skip, SkipTest
 
 from marrow.mailer import Message
 from marrow.mailer.transport.mbox import MailboxTransport
@@ -53,6 +49,7 @@ class TestMailboxTransport(TestCase):
         self.transport.deliver(message)
         
         with open(self.filename, 'rb') as fh:
-            self.assertEqual(str(message), b"\n".join(fh.read().splitlines()[1:]))
+            fh.readline()
+            # mbox ends each message with a blank line.
+            self.assertEqual(bytes(message) + b"\n\n", fh.read())
 
-"""

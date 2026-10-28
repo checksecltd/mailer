@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-"""
-
 from __future__ import unicode_literals
 
 import os
@@ -12,8 +10,6 @@ import mailbox
 import tempfile
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from nose.plugins.skip import Skip, SkipTest
 
 from marrow.mailer import Message
 from marrow.mailer.transport.maildir import MaildirTransport
@@ -63,6 +59,5 @@ class TestMailDirectoryTransport(TestCase):
         filename = os.listdir(os.path.join(self.path, 'new'))[0]
         
         with open(os.path.join(self.path, 'new', filename), 'rb') as fh:
-            self.assertEqual(str(message), fh.read())
+            self.assertEqual(bytes(message), fh.read())
 
-"""

@@ -1,15 +1,11 @@
 # encoding: utf-8
 
-"""
-
 from __future__ import unicode_literals
 
 import logging
 
 from functools import partial
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from nose.plugins.skip import Skip, SkipTest
 
 from marrow.mailer.exc import TransportExhaustedException, TransportFailedException, DeliveryFailedException, MessageFailedException
 from marrow.mailer.manager.dynamic import DynamicManager, WorkItem
@@ -56,14 +52,14 @@ class TestWorkItem(TestCase):
     def test_success(self):
         self.wi.run()
         
-        self.assertEquals(self.calls, [True])
+        self.assertEqual(self.calls, [True])
         self.assertTrue(self.f.result)
     
     def test_cancelled(self):
         self.f.cancelled = True
         self.wi.run()
         
-        self.assertEquals(self.calls, [])
+        self.assertEqual(self.calls, [])
     
     def test_exception(self):
         self.wi.fn = lambda: 1/0
@@ -110,24 +106,24 @@ class TestDynamicManager(ManagerTestCase):
     def test_startup(self):
         # TODO: Test logging messages.
         self.manager.startup()
-        self.assertEquals(self.states, [])
+        self.assertEqual(self.states, [])
     
     def test_shutdown(self):
         # TODO: Test logging messages.
         self.manager.startup()
         self.manager.shutdown()
-        self.assertEquals(self.states, [])
+        self.assertEqual(self.states, [])
     
     def test_success(self):
         self.manager.startup()
         
         self.manager.deliver("success")
         
-        self.assertEquals(self.states, ["running"])
-        self.assertEquals(self.messages, ["success"])
+        self.assertEqual(self.states, ["running"])
+        self.assertEqual(self.messages, ["success"])
         
         self.manager.shutdown()
-        self.assertEquals(self.states, ["running", "stopped"])
+        self.assertEqual(self.states, ["running", "stopped"])
     
     def test_message_failure(self):
         self.manager.startup()
@@ -137,11 +133,11 @@ class TestDynamicManager(ManagerTestCase):
         receipt = self.manager.deliver(exc)
         self.assertRaises(DeliveryFailedException, receipt.result)
         
-        self.assertEquals(self.states, ['running', 'stopped'])
-        self.assertEquals(self.messages, [exc])
+        self.assertEqual(self.states, ['running', 'stopped'])
+        self.assertEqual(self.messages, [exc])
         
         self.manager.shutdown()
-        self.assertEquals(self.states, ['running', 'stopped'])
+        self.assertEqual(self.states, ['running', 'stopped'])
     
     def test_transport_failure(self):
         self.manager.startup()
@@ -150,11 +146,11 @@ class TestDynamicManager(ManagerTestCase):
         
         self.manager.deliver(exc).result()
         
-        self.assertEquals(self.states, ['running', 'stopped', 'running'])
-        self.assertEquals(self.messages, [exc, exc])
+        self.assertEqual(self.states, ['running', 'stopped', 'running'])
+        self.assertEqual(self.messages, [exc, exc])
         
         self.manager.shutdown()
-        self.assertEquals(self.states, ['running', 'stopped', 'running', 'stopped'])
+        self.assertEqual(self.states, ['running', 'stopped', 'running', 'stopped'])
     
     def test_transport_exhaustion(self):
         self.manager.startup()
@@ -163,10 +159,9 @@ class TestDynamicManager(ManagerTestCase):
         
         self.manager.deliver(exc).result()
         
-        self.assertEquals(self.states, ['running', 'stopped'])
-        self.assertEquals(self.messages, [exc])
+        self.assertEqual(self.states, ['running', 'stopped'])
+        self.assertEqual(self.messages, [exc])
         
         self.manager.shutdown()
-        self.assertEquals(self.states, ['running', 'stopped'])
+        self.assertEqual(self.states, ['running', 'stopped'])
 
-"""
