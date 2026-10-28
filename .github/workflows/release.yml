@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - run: pip install build setuptools
+      - name: Check tag matches setup.py version
+        run: |
+          version=$(python setup.py --version)
+          test "$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != setup.py $version"; exit 1; }
+      - run: python -m build --wheel --outdir dist
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.whl --title "$GITHUB_REF_NAME" --generate-notes
