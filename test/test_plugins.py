@@ -5,17 +5,13 @@
 from __future__ import unicode_literals
 
 import logging
-import sys
 import pytest
 
 from unittest import TestCase
 
 from marrow.mailer.interfaces import IManager, ITransport
 
-if sys.version_info[:2] >= (3, 10):
-    from importlib.metadata import entry_points
-else:
-    from importlib_metadata import entry_points
+from importlib.metadata import entry_points
 
 log = logging.getLogger('tests')
 

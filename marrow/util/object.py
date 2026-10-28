@@ -4,17 +4,13 @@
 
 import logging
 import inspect
-import sys
 
 from collections import defaultdict
 from functools import partial
 
 from marrow.util.compat import binary, unicode
 
-if sys.version_info[:2] >= (3, 10):
-    from importlib.metadata import entry_points
-else:
-    from importlib_metadata import entry_points
+from importlib.metadata import entry_points
 
 
 def flatten(x):

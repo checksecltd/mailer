@@ -3,7 +3,6 @@
 """marrow.mailer mail delivery framework and MIME message abstraction."""
 
 
-import sys
 import warnings
 
 from email import charset
@@ -21,10 +20,7 @@ from marrow.util.compat import basestring
 from marrow.util.bunch import Bunch
 from marrow.util.object import load_object
 
-if sys.version_info[:2] >= (3, 10):
-    from importlib.metadata import entry_points
-else:
-    from importlib_metadata import entry_points
+from importlib.metadata import entry_points
 
 __all__ = ["Mailer", "Delivery", "Message"]
 
