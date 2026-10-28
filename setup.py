@@ -5,7 +5,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-version = "4.2.3"
+version = "5.0.0"
 author = "Alice Bevan-McGregor"
 author_email = "alice@gothcandy.com"
 description = (
