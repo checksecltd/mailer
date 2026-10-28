@@ -241,7 +241,7 @@ class TestAddressList(object):
             "user1@example.com, user2@example.com"
         )
 
-    def test_validation_strips_multiline_addresses(self):
+    def test_validation_rejects_multiline_addresses(self):
         self.addresses = "user.name+test@info.example.com"
         evil_lines = [
             "eviluser@example.com",
@@ -249,8 +249,9 @@ class TestAddressList(object):
             "From: spammeduser@example.com",
         ]
         evil_input = "\n".join(evil_lines)
-        self.addresses.append(evil_input)
-        assert self.addresses == ["user.name+test@info.example.com", evil_lines[0]]
+        with pytest.raises(ValueError):
+            self.addresses.append(evil_input)
+        assert self.addresses == ["user.name+test@info.example.com"]
 
     def test_return_addresses_as_strings(self):
         self.addresses = "foo@exámple.test"
