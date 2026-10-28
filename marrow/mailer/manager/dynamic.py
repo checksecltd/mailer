@@ -121,6 +121,19 @@ class ScalingPoolExecutor(futures.ThreadPoolExecutor):
     def _atexit(self):  # pragma: no cover
         self.shutdown(True)
 
+    def submit(self, fn, *args, **kwargs):
+        # The inherited submit queues the stdlib _WorkItem, whose run() needs
+        # a worker context on Python 3.14+ and which reads attributes this
+        # __init__ never sets. thread_worker expects our WorkItem.
+        with self._shutdown_lock:
+            if self._shutdown:
+                raise RuntimeError("cannot schedule new futures after shutdown")
+
+            future = futures.Future()
+            self._work_queue.put(WorkItem(future, fn, args, kwargs))
+            self._adjust_thread_count()
+            return future
+
     def _spawn(self):
         t = threading.Thread(
             target=thread_worker,
